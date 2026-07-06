@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: adammrich-com
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: dist
+    routes:
+      - type: redirect
+        source: /home
+        destination: /
+      - type: redirect
+        source: /home/
+        destination: /

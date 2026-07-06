@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunknew_bedford_framework=globalThis.webpackChunknew_bedford_framework||[]).push([[4583],{64557:(e,t,n)=>{n.r(t),n.d(t,{default:()=>o});const o=e=>{const t=()=>{const t=document.querySelectorAll("main .page-section");if(0===t.length)return;const n=t[t.length-1].dataset.sectionTheme;e.dataset.sectionTheme=n};return t(),{matchLastSectionColorTheme:t}}}}]);
+//# sourceMappingURL=https://sourcemaps.squarespace.net/new-bedford-framework/sourcemaps/77288cc18b019c2f72948c3a06b04199/scripts/item-pagination.4fdc578f6b37798c493e.js.map

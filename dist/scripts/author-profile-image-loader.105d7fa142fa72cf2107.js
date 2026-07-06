@@ -1,0 +1,2 @@
+"use strict";(globalThis.webpackChunknew_bedford_framework=globalThis.webpackChunknew_bedford_framework||[]).push([[654],{23846:(e,o,a)=>{a.r(o),a.d(o,{default:()=>w});var r=a(68444),t=a.n(r),l=a(17228);const w=e=>{const o=()=>{"true"===t().getValue("tweak-blog-item-show-author-profile")&&l.A.loadLazy(e,{load:!0,mode:"cover"})};t().watch(["tweak-blog-item-show-author-profile"],o),o()}}}]);
+//# sourceMappingURL=https://sourcemaps.squarespace.net/new-bedford-framework/sourcemaps/ea7d54d3ce2f4075f9288c4a1984c766/scripts/author-profile-image-loader.105d7fa142fa72cf2107.js.map

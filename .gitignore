@@ -1,0 +1,10 @@
+# Whitelist: only the static site + build tooling belong in this repo.
+# (This folder also holds loose personal images and the raw wget mirror.)
+/*
+!/dist
+!/render.yaml
+!/build_dist.py
+!/fetch_missing.py
+!/README.md
+!/.gitignore
+.DS_Store

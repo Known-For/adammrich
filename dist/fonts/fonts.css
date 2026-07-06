@@ -1,0 +1,59 @@
+/* Self-hosted replacements for Squarespace Typekit kit (family "interface")
+   and Google Fonts (Archivo Black). Downloaded 2026-07-06 while the
+   Squarespace/Adobe license was active. */
+@font-face {
+  font-family: "interface";
+  src: url("/fonts/interface-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "interface";
+  src: url("/fonts/interface-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: auto;
+}
+@font-face {
+  font-family: "interface";
+  src: url("/fonts/interface-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "interface";
+  src: url("/fonts/interface-700-italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: auto;
+}
+@font-face {
+  font-family: "interface";
+  src: url("/fonts/interface-800-normal.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "interface";
+  src: url("/fonts/interface-800-italic.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+  font-display: auto;
+}
+@font-face {
+  font-family: "interface";
+  src: url("/fonts/interface-900-normal.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Archivo Black";
+  src: url("/fonts/archivo-black-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
