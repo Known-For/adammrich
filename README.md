@@ -24,8 +24,15 @@ site self-hosted on Render (free static hosting).
 ## Deploy to Render
 
 1. Push this repo to GitHub.
-2. In Render: **New → Static Site**, connect the repo. The `render.yaml` is
-   picked up automatically (or set Publish Directory = `dist`, no build command).
+2. In Render: **New → Static Site**, connect the repo, set Publish Directory
+   = `dist`, no build command.
+
+   > **`render.yaml` is NOT read by a standalone Static Site.** Render only
+   > consults it for *Blueprint-managed* services. A site created through
+   > **New → Static Site** ignores the file entirely — its redirects and
+   > headers live in the dashboard instead. The routes/headers below are kept
+   > in `render.yaml` as the source of truth, but they only take effect if the
+   > service is Blueprint-managed; otherwise mirror them in the dashboard.
 3. Add custom domains `adammrich.com` and `www.adammrich.com`; follow Render's
    DNS instructions at your registrar.
 
@@ -44,11 +51,29 @@ Two things were quietly costing a lot of Render egress:
 **Nothing was cached.** Render's default for static sites is
 `Cache-Control: public, max-age=0, s-maxage=300` — browsers re-validate every
 asset on every visit, and the CDN edge drops everything after five minutes, so
-almost all traffic fell through to the origin. `render.yaml` now sets explicit
-headers: one year `immutable` for the content-hashed bundles under
+almost all traffic fell through to the origin. `render.yaml` now declares
+explicit headers: one year `immutable` for the content-hashed bundles under
 `/assets…`, `/static1…`, `/definitions…`, `/scripts` and `/fonts`, 30 days for
 images, and a short browser TTL with a long edge TTL for HTML. Render purges
 the edge on deploy, so the long values are safe.
+
+**These only apply if the service is Blueprint-managed** (see the deploy note
+above). On a standalone Static Site, add the same rules under
+*Settings → Headers*:
+
+| Path | Value (header name is `Cache-Control`) |
+| --- | --- |
+| `/assets.squarespace.com/*` | `public, max-age=31536000, immutable` |
+| `/static1.squarespace.com/*` | `public, max-age=31536000, immutable` |
+| `/definitions.sqspcdn.com/*` | `public, max-age=31536000, immutable` |
+| `/scripts/*` | `public, max-age=31536000, immutable` |
+| `/fonts/*` | `public, max-age=31536000, immutable` |
+| `/images.squarespace-cdn.com/*` | `public, max-age=2592000` |
+| `/*.html` | `public, max-age=300, s-maxage=86400` |
+| `/` | `public, max-age=300, s-maxage=86400` |
+
+Verify with:
+`curl -sI https://adammrich.com/fonts/fonts.css | grep -i cache-control`
 
 **Every thumbnail was served as a full-resolution original.** `build_dist.py`
 keeps only the largest `?format=<N>w` variant of each image, but Squarespace's
