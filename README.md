@@ -59,21 +59,30 @@ the edge on deploy, so the long values are safe.
 
 **These only apply if the service is Blueprint-managed** (see the deploy note
 above). On a standalone Static Site, add the same rules under
-*Settings → Headers*:
+*Settings → Headers*. Header name is `Cache-Control` for all six.
 
-| Path | Value (header name is `Cache-Control`) |
+Render's `*` does not cross slashes, so nested directories need `/**/*` — an
+earlier version of this file used `/assets.squarespace.com/*` and `/*.html`,
+which matched nothing (the asset dirs are 3-8 levels deep, and pages are
+served as directory URLs like `/content-strategy/`, never `.html`).
+
+| Path | Value |
 | --- | --- |
-| `/assets.squarespace.com/*` | `public, max-age=31536000, immutable` |
-| `/static1.squarespace.com/*` | `public, max-age=31536000, immutable` |
-| `/definitions.sqspcdn.com/*` | `public, max-age=31536000, immutable` |
+| `/assets.squarespace.com/**/*` | `public, max-age=31536000, immutable` |
+| `/static1.squarespace.com/**/*` | `public, max-age=31536000, immutable` |
+| `/definitions.sqspcdn.com/**/*` | `public, max-age=31536000, immutable` |
 | `/scripts/*` | `public, max-age=31536000, immutable` |
 | `/fonts/*` | `public, max-age=31536000, immutable` |
-| `/images.squarespace-cdn.com/*` | `public, max-age=2592000` |
-| `/*.html` | `public, max-age=300, s-maxage=86400` |
-| `/` | `public, max-age=300, s-maxage=86400` |
+| `/images.squarespace-cdn.com/**/*` | `public, max-age=2592000` |
+
+HTML is deliberately left on Render's default: pages are directory URLs, so an
+extension rule would never match, and the documents are small next to assets.
 
 Verify with:
-`curl -sI https://adammrich.com/fonts/fonts.css | grep -i cache-control`
+```
+curl -sI https://adammrich.com/fonts/fonts.css | grep -i cache-control
+```
+Append `?x=1` to bypass the edge cache and confirm the origin itself changed.
 
 **Every thumbnail was served as a full-resolution original.** `build_dist.py`
 keeps only the largest `?format=<N>w` variant of each image, but Squarespace's

@@ -13,21 +13,30 @@ services:
         destination: /
 
     # ---- Caching -------------------------------------------------------
-    # Render's default for static sites is `max-age=0, s-maxage=300`, which
-    # means browsers re-validate every asset on every visit and the CDN edge
-    # drops everything after 5 minutes — so nearly all traffic falls through
-    # to the origin and bills bandwidth. Everything below /assets…, /static1…,
-    # /definitions… and /scripts is content-hashed or version-pinned in its
-    # path, so it can be cached permanently and immutably. Render purges the
-    # CDN on every deploy, so long s-maxage values are safe.
+    # Render's default for static sites is `max-age=0, s-maxage=300`: browsers
+    # re-validate every asset on every visit and the edge drops everything
+    # after five minutes, so almost all traffic bills origin bandwidth.
+    #
+    # NOTE: these only take effect if the service is Blueprint-managed. A site
+    # created via New -> Static Site ignores this file; set the same rules
+    # under Settings -> Headers in the dashboard. See README.
+    #
+    # Path syntax matters: Render's `*` does not cross slashes ("/*.css
+    # matches CSS files in the root only"), so nested directories need
+    # `/**/*`. Depths in dist/: assets 3-4, static1 4-8, definitions 5,
+    # images 5-8, scripts 1, fonts 1.
+    #
+    # HTML is left on Render's default deliberately. Pages are served as
+    # directory URLs (/, /content-strategy/), so an extension-based rule
+    # would never match, and the documents are small next to the assets.
     headers:
-      - path: /assets.squarespace.com/*
+      - path: /assets.squarespace.com/**/*
         name: Cache-Control
         value: public, max-age=31536000, immutable
-      - path: /static1.squarespace.com/*
+      - path: /static1.squarespace.com/**/*
         name: Cache-Control
         value: public, max-age=31536000, immutable
-      - path: /definitions.sqspcdn.com/*
+      - path: /definitions.sqspcdn.com/**/*
         name: Cache-Control
         value: public, max-age=31536000, immutable
       - path: /scripts/*
@@ -36,18 +45,10 @@ services:
       - path: /fonts/*
         name: Cache-Control
         value: public, max-age=31536000, immutable
-      # Image paths carry a Squarespace asset UUID, so they are stable in
-      # practice — but they are the one place content might be swapped in
-      # place by hand, so cap at 30 days rather than marking immutable.
-      # To force an early refresh, rename the file and update the reference.
-      - path: /images.squarespace-cdn.com/*
+      # Image paths carry a Squarespace asset UUID and the sized variants are
+      # content-named, so they are stable — but this is the one place content
+      # might be swapped in place by hand, so cap at 30 days rather than
+      # marking immutable. To force a refresh, rename and update references.
+      - path: /images.squarespace-cdn.com/**/*
         name: Cache-Control
         value: public, max-age=2592000
-      # HTML is the only mutable surface: keep the browser copy short-lived
-      # but let the edge hold it, since deploys purge the edge anyway.
-      - path: /*.html
-        name: Cache-Control
-        value: public, max-age=300, s-maxage=86400
-      - path: /
-        name: Cache-Control
-        value: public, max-age=300, s-maxage=86400
