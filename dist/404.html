@@ -1,6 +1,61 @@
 <!doctype html>
 <html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml" lang="en-US"  >
-  <head>
+  <head><script>/* sized-variant shim — injected into every page by optimize_images.py.
+ *
+ * Squarespace's runtime image loader requests `<path>/name.ext?format=300w`.
+ * On static hosting the query string is ignored, so that request is answered
+ * with whatever single file sits at that path — a thumbnail slot gets a
+ * full-size master. The summary and gallery blocks rebuild their <img>
+ * elements client-side, so rewriting the static HTML does not reach them.
+ *
+ * This maps those requests onto the real `name__<N>w.ext` files that
+ * optimize_images.py emits. MANIFEST is { canonicalPath: [availableWidths] }.
+ * Anything not in the manifest — the Klarna GIF included — is passed through
+ * untouched, and any failure returns the original URL, which is exactly the
+ * behaviour that existed before this shim.
+ */
+(function () {
+  try {
+    var MANIFEST = {"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659224591260-30WDDW9AKG82C0UPKTWI/Staff_of_Ra.png":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1a4654ce-7578-418e-acfb-f5198c5b0fc4/retention-white-long.png":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659225997740-O7LU53GMXIJ3YISKTSHO/MV5BZWEzOTM4MmEtYjZkYi00NzdjLTliMGMtNTFjY2U0MWVmZTI2XkEyXkFqcGdeQXVyNjcyNzkwMTc@._V1_.jpg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/42dfdaa1-c9b0-4083-a444-74fda0be67d6/TRQ+graphic+1b.png":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659219271762-W7QYB00ICOC1ETWH40OB/unnamed.jpeg":[100,300,500,750],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659224853242-X6W5FOKKUWKTPZJYZXIB/15FUTURETENSE-superJumbo-v3.jpeg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659220214635-A7GA1FEKZ33KOB7UXA8O/Laughing1.png":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659219901914-7IJQD9QZ4KPH96T2XA3N/Reebok-Sports-Clothes-and-Cap-Worn-by-Dana-Thomas-Carvey-in-Wayne\u2019s-World-3.jpeg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/6d7d33a6-77ba-4a68-b9d4-1cc594ee3ccc/product+innovation+d.jpg":[100,300,500,750],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659223714894-QXTUXQDNSP17KBKV2JO9/Pumping-Iron-1-1024x576.jpeg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659224062308-7QSJEMRRQIGYEDGESOKW/MV5BMTM3MjcyNDMxMV5BMl5BanBnXkFtZTcwOTc0NTY0NQ@@._V1_.jpg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/a4223755-c7d6-4ca4-8768-be1e59d843d4/AR-Logo-Horizontal.png":[100,300],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/1659223004746-K2FI1NOVG8QDKSG41BWQ/4000.png":[100,300,500,750],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/62ba6431-bfb9-4b91-aab0-48c2fd61d661/ai+content+systems.jpg":[100,300,500,750],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/4d1d0efc-2664-4df1-9527-225f9135bec1/thought+leadership.jpg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/8dfe9ab9-ae21-4e96-b92f-ec58bd86072f/Adam+headshots-10+square.jpeg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/14dab580-0392-4c4f-b8de-3e5e724847bf/sfg_productions_logo.jpg":[100,300],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/7600160c-8112-46fc-91bf-4eaa0eee54fe/SFG+Process.jpg":[100,300,500],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/f65e2359-a241-4188-9cc9-da17d39fd0e6/Screenshot+2023-10-27+at+9.47.31\u202fAM.jpg":[100,300,500,750,1000],"/images.squarespace-cdn.com/content/v1/62b5d01c747ccc25f8fde068/bf1af3c6-8eca-4f1c-9d92-eee00188222e/klarna.jpg":[100,300,500,750]};
+    var RE = /^(.*)\.([A-Za-z0-9]+)\?format=(\d+)w$/;
+
+    function map(url) {
+      try {
+        var s = String(url);
+        if (s.indexOf('?format=') < 0) return url;
+        var m = RE.exec(s.replace(/^https?:\/\/[^/]+/, ''));
+        if (!m) return url;
+        var widths = MANIFEST[decodeURIComponent(m[1] + '.' + m[2])];
+        if (!widths) return url;
+        var want = +m[3], pick = null;
+        for (var i = 0; i < widths.length; i++) {
+          if (widths[i] >= want) { pick = widths[i]; break; }
+        }
+        if (pick === null) pick = widths[widths.length - 1];
+        return m[1] + '__' + pick + 'w.' + m[2];
+      } catch (e) { return url; }
+    }
+
+    var desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    if (desc && desc.set) {
+      Object.defineProperty(HTMLImageElement.prototype, 'src', {
+        configurable: true,
+        enumerable: desc.enumerable,
+        get: function () { return desc.get.call(this); },
+        set: function (v) { desc.set.call(this, map(v)); }
+      });
+    }
+
+    var setAttr = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function (name, value) {
+      if (this instanceof HTMLImageElement && String(name).toLowerCase() === 'src') {
+        value = map(value);
+      }
+      return setAttr.call(this, name, value);
+    };
+  } catch (e) { /* leave the page exactly as it was */ }
+})();
+</script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- This is Squarespace. --><!-- tuna-tuatara-ygy5 -->

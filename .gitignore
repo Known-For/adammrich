@@ -5,6 +5,8 @@
 !/render.yaml
 !/build_dist.py
 !/fetch_missing.py
+!/optimize_images.py
+!/image_shim.js
 !/README.md
 !/.gitignore
 .DS_Store

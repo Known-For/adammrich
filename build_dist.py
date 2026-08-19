@@ -183,4 +183,15 @@ for url in sorted(ext_css):
 
 # 404 page = homepage copy so Render serves something sane
 shutil.copy2(os.path.join(DIST, "index.html"), os.path.join(DIST, "404.html"))
+
+# ---------- 7. Right-size images ----------
+# Step 1 above keeps only the largest ?format= variant of each image, but the
+# Squarespace loader still requests sized ones at runtime — and static hosting
+# ignores query strings, so every thumbnail would be answered with the
+# full-resolution original. optimize_images.py restores the sized variants and
+# teaches the loader to ask for them. Without it the site ships ~10x more
+# image data than it needs to.
+import optimize_images
+optimize_images.main()
+
 print("done")
