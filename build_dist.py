@@ -132,6 +132,10 @@ for src, url in PAGE_FILES:
     with open(src, encoding="utf-8", errors="replace") as fh:
         html = fh.read()
     html = rewrite_html(src, html)
+    if url == "/cart/":
+        # Empty Squarespace commerce artifact, not real content -> keep it
+        # out of the index instead of leaving it to dangle as "not indexed".
+        html = html.replace("<head>", '<head><meta name="robots" content="noindex">', 1)
     out_dir = os.path.join(DIST, url.lstrip("/"))
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as fh:
@@ -194,4 +198,30 @@ shutil.copy2(os.path.join(DIST, "index.html"), os.path.join(DIST, "404.html"))
 import optimize_images
 optimize_images.main()
 
+# ---------- 8. sitemap.xml + robots.txt ----------
+# Tells Google the actual set of canonical pages, so it converges on this
+# list instead of re-flagging leftover Squarespace URL variants (?format=,
+# ?author=, .html) as "new" coverage issues on every recrawl.
+SITE_ORIGIN = "https://adammrich.com"
+sitemap_urls = sorted(set(url for _, url in PAGE_FILES if url and url != "/cart/"))
+
+sitemap_xml = (
+    '<?xml version="1.0" encoding="UTF-8"?>\n'
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    + "\n".join(f"  <url><loc>{SITE_ORIGIN}{u}</loc></url>" for u in sitemap_urls)
+    + "\n</urlset>\n"
+)
+with open(os.path.join(DIST, "sitemap.xml"), "w", encoding="utf-8") as fh:
+    fh.write(sitemap_xml)
+
+robots_txt = (
+    "User-agent: *\n"
+    "Disallow: /cart/\n"
+    "Allow: /\n"
+    f"Sitemap: {SITE_ORIGIN}/sitemap.xml\n"
+)
+with open(os.path.join(DIST, "robots.txt"), "w", encoding="utf-8") as fh:
+    fh.write(robots_txt)
+
+print(f"sitemap: {len(sitemap_urls)} urls")
 print("done")

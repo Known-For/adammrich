@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /cart/
+Allow: /
+Sitemap: https://adammrich.com/sitemap.xml
