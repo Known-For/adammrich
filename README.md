@@ -108,25 +108,14 @@ payload went from 2.97 MB to ~0.3 MB with the rendered layout unchanged.
 If you re-scrape, just run `build_dist.py` — it calls the optimizer for you.
 `site/` must be present, since that is where the sized variants come from.
 
-### The Klarna GIF
+### The Klarna animation
 
-`Klarna+Feed+PoC.gif` is deliberately exempt from all of the above and ships
-byte-for-byte untouched at 4.04 MB. It is already only 230x498 — its weight is
-314 frames of animation, not resolution — so there is nothing to reclaim
-without making it smaller or choppier. It is lazy-loaded, so only visitors who
-scroll to it pay for it.
-
-The one option that would shrink it *without* touching resolution or
-smoothness is re-encoding to video, which also drops GIF's 256-colour limit:
-
-| format | size | vs GIF |
-| --- | --- | --- |
-| GIF (current) | 4.24 MB | — |
-| H.264 MP4, CRF 20 | 0.91 MB | -79% |
-| VP9 WebM, CRF 28 | 0.68 MB | -84% |
-
-That needs the `<img>` swapped for `<video autoplay muted loop playsinline>`,
-so it is left as a deliberate decision rather than done automatically.
+The original 4.24 MB GIF is replaced in the deployed HTML by an H.264 MP4 at
+CRF 20. It preserves the 230x498 dimensions and 314-frame animation while
+reducing the file to about 0.9 MB. The `<video>` uses `muted`, `loop`,
+`playsinline`, and `preload="metadata"` so it behaves like the original visual
+with a much smaller transfer. The GIF remains in `dist/` as the source asset
+for future re-encoding, but no deployed page references it.
 
 ## Known limitations
 
